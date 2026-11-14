@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="description" content="A simulated SAR surface-change timeline for exploring geospatial motion." />
+    <title>Dancing with the SARs · Surface Change Visualizer</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#top" aria-label="Dancing with the SARs home">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M8 27c10-10 21-13 32-7M13 36c8-5 16-7 24-6M24 7v34M7 24h34"/><path class="brand-sweep" d="m24 24 13-13"/><circle class="brand-signal" cx="37" cy="11" r="3"/></svg></span>
+          <span><b>DANCING WITH<br />THE SARS</b><small>SURFACE CHANGE LAB</small></span>
+        </a>
+        <div class="sidebar-rule"></div>
+        <div class="eyebrow">STUDY AREAS</div>
+        <label class="select-wrap" for="study-select">
+          <select id="study-select" aria-label="Choose a study area"></select>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg>
+        </label>
+        <p id="study-region" class="study-region">Loading study areas…</p>
+        <div class="study-chip"><span class="live-dot"></span><span id="study-phenomenon">SIMULATED SCENE</span></div>
+
+        <div class="sidebar-rule"></div>
+        <div class="eyebrow">MAP LAYERS</div>
+        <label class="toggle-row"><span><i class="layer-icon vector-icon"></i>Displacement vectors</span><input id="vectors-toggle" type="checkbox" checked /><i class="toggle-ui"></i></label>
+        <label class="toggle-row"><span><i class="layer-icon area-icon"></i>Study footprint</span><input id="footprint-toggle" type="checkbox" checked /><i class="toggle-ui"></i></label>
+        <label class="toggle-row"><span><i class="layer-icon nasa-icon"></i>NASA Terra imagery</span><input id="nasa-imagery-toggle" type="checkbox" checked /><i class="toggle-ui"></i></label>
+        <p class="nasa-credit">Date-matched MODIS true color · <a href="https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/" target="_blank" rel="noreferrer">NASA GIBS source ↗</a></p>
+
+        <div class="sidebar-rule"></div>
+        <div class="eyebrow">PLAYBACK SPEED</div>
+        <label class="speed-wrap" for="speed-select">
+          <select id="speed-select" aria-label="Playback speed">
+            <option value="1800">0.55×</option>
+            <option value="1250">0.8×</option>
+            <option value="1000" selected>1×</option>
+            <option value="700">1.4×</option>
+          </select>
+          <span class="speed-chevrons">⌃<br />⌄</span>
+        </label>
+
+        <div class="sidebar-bottom">
+          <div class="dataset-note"><span class="dataset-star">✳</span><span><b>NASA + DEMO DATA</b><small>NASA imagery · simulated motion</small></span></div>
+          <div class="sidebar-footer">NASA SPACE APPS CHALLENGE<br /><span>PROTOTYPE · NOT A SCIENTIFIC PRODUCT</span></div>
+        </div>
+      </aside>
+
+      <main id="top" class="main-content">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>EARTH OBSERVATION</span><b>/</b><span>SURFACE CHANGE</span></div>
+          <div class="top-actions">
+            <span class="api-status"><i></i><span id="api-status">LOCAL API READY</span></span>
+            <button id="theme-toggle" class="theme-button" type="button" aria-label="Switch to light mode">
+              <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+              <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.1A8.5 8.5 0 0 1 8.9 3.6 8.6 8.6 0 1 0 20.4 15.1Z"/></svg>
+              <span id="theme-label">Light mode</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="hero">
+          <div>
+            <div class="hero-kicker"><span></span> CHANGE OVER TIME · SYNTHETIC EXPLORER</div>
+            <h1>Dancing with the <em>SARs</em></h1>
+            <p class="hero-subtitle">A surface change visualizer for a planet in motion.</p>
+          </div>
+          <div class="hero-badges"><span class="badge badge-accent">SIMULATED SCENE</span><span class="badge">L-BAND CONCEPT</span></div>
+        </section>
+
+        <div class="mission-strip">
+          <span class="strip-pulse"></span><b id="mission-phenomenon">SURFACE CHANGE</b><span class="strip-divider">/</span><span id="mission-study">SELECT A STUDY AREA</span><span class="strip-spacer"></span><span id="mission-region">GLOBAL</span><span class="coordinate-tag" id="coordinates">—</span>
+        </div>
+
+        <section class="timeline-section" aria-labelledby="timeline-title">
+          <div class="section-heading">
+            <div><div class="eyebrow">TEMPORAL EXPLORER</div><h2 id="timeline-title">Surface displacement</h2></div>
+            <div class="date-window"><span id="date-start">JAN 2022</span><b>→</b><span id="date-end">JAN 2025</span></div>
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-controls">
+              <button id="play-button" class="primary-button" type="button"><span class="play-glyph">▶</span><span>Play</span></button>
+              <button id="reset-button" class="secondary-button" type="button"><span>↺</span> Reset</button>
+              <div class="range-wrap"><input id="date-slider" type="range" min="0" max="12" value="0" step="1" aria-label="Observation date" /><div class="range-ends"><span id="range-start">JAN 2022</span><span id="range-end">JAN 2025</span></div></div>
+              <div class="selected-date"><b id="selected-date">01 JAN 2022</b><small>OBSERVATION</small></div>
+            </div>
+            <div class="timeline-ticks" id="timeline-ticks" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Selected observation metrics">
+          <article class="metric-card"><div class="metric-label">MEDIAN VELOCITY</div><div class="metric-value" id="metric-velocity">—</div><div class="metric-foot">Across simulated sample points</div></article>
+          <article class="metric-card"><div class="metric-label">MEAN DISPLACEMENT</div><div class="metric-value" id="metric-displacement">—</div><div class="metric-foot" id="metric-displacement-foot">Since first observation</div></article>
+          <article class="metric-card"><div class="metric-label">SAMPLE POINTS</div><div class="metric-value" id="metric-samples">—</div><div class="metric-foot">Synthetic observation grid</div></article>
+          <article class="metric-card metric-accent"><div class="metric-label">SCENE INTERVAL</div><div class="metric-value" id="metric-interval">—</div><div class="metric-foot">Since prior acquisition</div></article>
+        </section>
+
+        <section class="map-card" aria-labelledby="map-title">
+          <div class="card-heading">
+            <div><h3 id="map-title">Displacement field</h3><p>Hover a sample to inspect its simulated motion</p></div>
+            <div class="legend"><span><i class="legend-dot slow"></i>LOWER</span><span><i class="legend-dot fast"></i>FASTER</span></div>
+          </div>
+          <div class="map-frame-wrap"><iframe id="map-frame" title="Deck.gl map of simulated surface change" loading="eager"></iframe><div id="map-loading" class="map-loading"><span></span>Rendering synthetic map…</div></div>
+          <div class="map-attribution">© CARTO · © OpenStreetMap contributors <span>·</span> SIMULATED OBSERVATIONS</div>
+        </section>
+
+        <section class="bottom-grid">
+          <article class="history-card">
+            <div class="card-heading"><div><h3>Displacement history</h3><p>Mean cumulative movement · meters</p></div><span class="history-range">2022—2025</span></div>
+            <div id="history-chart" class="history-chart" role="img" aria-label="Mean simulated displacement over time"></div>
+          </article>
+          <article class="notes-card">
+            <div class="card-heading"><div><h3>Scene notes</h3><p>Model context</p></div></div>
+            <div class="note-row"><span class="note-mark">✳</span><div><b id="note-title">Direction of travel</b><p id="study-description">The selected scene uses deterministic simulated values for interface development.</p></div></div>
+            <div class="note-row"><span class="note-mark note-blue">⌁</span><div><b>Not a measured product</b><p>Map vectors are enlarged for visibility. This is not NISAR data or a scientific estimate.</p></div></div>
+          </article>
+        </section>
+
+        <div class="export-row">
+          <div class="export-note"><span>↳</span>Export the selected synthetic acquisition for further exploration.</div>
+          <a id="download-button" class="download-button" href="#"><span>↓</span> Download current observation · CSV</a>
+        </div>
+        <div id="error-banner" class="error-banner" role="alert" hidden></div>
+        <footer class="page-footer">DANCING WITH THE SARS <span>·</span> SPACE APPS CHALLENGE <span>·</span> SIMULATED DATA FOR PROTOTYPING</footer>
+      </main>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </body>
+</html>
